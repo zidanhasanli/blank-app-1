@@ -7,9 +7,12 @@ from reportlab.lib.styles import getSampleStyleSheet
 
 print("This system helps student organizations choose the best event strategy using AI advisors.\n")
 
+import os
+
+
 client = OpenAI(
-    base_url="https://api.groq.com/openai/v1",  
-    api_key="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"
+    base_url="https://api.groq.com/openai/v1",
+    api_key=os.getenv("GROQ_API_KEY")
 )
 
 
@@ -318,9 +321,9 @@ def risk_analysis(event_data):
 
         print(f"{event} → {risk}")
 
-def run_strategy_session(question):
+def run_strategy_session(question, org_type):
 
-        org_type = select_organization()
+    
         event_data = load_event_data(org_type)
         agents = get_advisors(org_type)
 
@@ -454,12 +457,12 @@ def run_strategy_session(question):
         print("\nPDF report generated: AI_strategy_report.pdf")
 
         return {
-            "votes": votes,
             "winner": winner,
             "confidence": round(confidence, 2),
-            "recommendation": final_text,
-            "data_summary": event_data.to_dict()
-            } 
+            "votes": votes,
+            "scores": scores,
+            "event_data": event_data.to_dict()
+        }
         
 
 
